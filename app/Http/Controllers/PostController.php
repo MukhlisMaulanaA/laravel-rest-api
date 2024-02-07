@@ -14,14 +14,14 @@ class PostController extends Controller
   {
     $posts = Post::with('writer:id,username')->get();
     // return response()->json(['data' => $posts]);
-    return PostDetailResource::collection($posts);
+    return PostDetailResource::collection($posts->loadMissing(['comments:id,post_id,user_id,comments_content']));
   }
 
   public function show($id)
   {
     $post = Post::with('writer:id,username')->findOrFail($id);
     // return response()->json(['data' => $post]);
-    return new PostDetailResource($post);
+    return new PostDetailResource($post->loadMissing(['comments:id,post_id,user_id,comments_content']));
   }
 
   public function store(Request $request)

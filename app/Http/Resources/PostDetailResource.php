@@ -20,7 +20,16 @@ class PostDetailResource extends JsonResource
       'news_content' => $this->news_content,
       'created_at' => date('Y-m-D', strtotime($this->created_at)),
       'author' => $this->author,
-      'writer' => $this->whenLoaded('writer') // use eagerLoad
+      'writer' => $this->whenLoaded('writer'), // use eagerLoad
+      'comments' => $this->whenLoaded('comments', function () {
+        return collect($this->comments)->each(function ($comment) {
+          $comment->commentator;
+          return $comment;
+        });
+      }),
+      'comment_total' => $this->whenLoaded('comments', function () {
+        return $this->comments->count();
+      })
     ];
   }
 }
